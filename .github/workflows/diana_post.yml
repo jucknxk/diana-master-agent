@@ -5,36 +5,32 @@ on:
     - cron: '0 */3 * * *'
   workflow_dispatch:
 
-env:
-  # Warning ကို ကျော်ရန် Node 24 သုံးခြင်း
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        # Node 24 support ပါဝင်သော နောက်ဆုံး version သို့ မြှင့်တင်ခြင်း
+        uses: actions/checkout@v5 
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        # Node 24 support ပါဝင်သော နောက်ဆုံး version သို့ မြှင့်တင်ခြင်း
+        uses: actions/setup-python@v6
         with:
           python-version: '3.10'
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-
-      - name: Debug - List Files
-        # ဖိုင်တွေ တကယ်ရှိမရှိ စစ်ဆေးခြင်း
-        run: ls -la
+          python -m pip install --upgrade pip
+          pip install tweepy groq
 
       - name: Run Bot
         env:
+          # Warning ရှင်းရန် force variable ကို ဖြုတ်လိုက်လို့ရပါပြီ (Version မြှင့်ပြီးသားမို့လို့)
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-        # ဖိုင်လမ်းကြောင်းကို အသေချာဆုံးဖြစ်အောင် ./ ထည့်သုံးခြင်း
-        run: python ./bot.py
+        run: python bot.py
