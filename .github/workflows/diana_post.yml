@@ -1,21 +1,29 @@
 name: Diana Auto Post
+
 on:
   schedule:
-    - cron: '0 */3 * * *' # ၃ နာရီခြားတစ်ခါ တင်မည်
-  workflow_dispatch:
+    - cron: '0 */3 * * *' # ၃ နာရီခြားတစ်ခါ Run မည်
+  workflow_dispatch: # ဒါရှိမှ Manual ခလုတ် ပေါ်မှာပါ
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4 # Version အသစ်ပြောင်းထားသည်
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # Version အသစ်ပြောင်းထားသည်
         with:
-          python-version: '3.9'
+          python-version: '3.10'
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+
       - name: Run Bot
         env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Node 24 သုံးရန် Force လုပ်ထားသည်
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
