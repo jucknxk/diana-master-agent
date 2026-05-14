@@ -2,13 +2,11 @@ name: Diana Auto Post
 
 on:
   schedule:
-    # ၃ နာရီခြားတစ်ခါ Run မည်
     - cron: '0 */3 * * *'
-  # ဤအပိုင်းပါမှ "Run workflow" ခလုတ် ပေါ်လာမည်ဖြစ်သည်
-  workflow_dispatch:
+  workflow_dispatch: # ဒီစာသားပါမှ "Run workflow" ခလုတ် ပေါ်လာမှာပါ
 
 env:
-  # GitHub ရဲ့ သတိပေးချက်ကို ဖြေရှင်းရန် Node 24 ကို အတင်းအကျပ် သုံးခိုင်းခြင်း
+  # GitHub Changelog အရ Node 24 ကို အသုံးပြုရန် သတ်မှတ်ခြင်း
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
