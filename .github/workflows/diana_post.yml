@@ -2,18 +2,24 @@ name: Diana Auto Post
 
 on:
   schedule:
-    - cron: '0 */3 * * *' # ၃ နာရီခြားတစ်ခါ Run မည်
-  workflow_dispatch: # ဒါရှိမှ Manual ခလုတ် ပေါ်မှာပါ
+    # ၃ နာရီခြားတစ်ခါ Run မည်
+    - cron: '0 */3 * * *'
+  # ဤအပိုင်းပါမှ "Run workflow" ခလုတ် ပေါ်လာမည်ဖြစ်သည်
+  workflow_dispatch:
+
+env:
+  # GitHub ရဲ့ သတိပေးချက်ကို ဖြေရှင်းရန် Node 24 ကို အတင်းအကျပ် သုံးခိုင်းခြင်း
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Version အသစ်ပြောင်းထားသည်
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5 # Version အသစ်ပြောင်းထားသည်
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -23,7 +29,6 @@ jobs:
 
       - name: Run Bot
         env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Node 24 သုံးရန် Force လုပ်ထားသည်
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
