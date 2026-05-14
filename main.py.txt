@@ -1,0 +1,74 @@
+import os
+import random
+from groq import Groq
+import tweepy
+
+# --- ၁။ API Keys (GitHub Secrets မှ ရယူမည်) ---
+GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
+X_API_KEY = os.environ.get("X_API_KEY")
+X_API_SECRET = os.environ.get("X_API_SECRET")
+X_ACCESS_TOKEN = os.environ.get("X_ACCESS_TOKEN")
+X_ACCESS_TOKEN_SECRET = os.environ.get("X_ACCESS_TOKEN_SECRET")
+
+def generate_diana_master_content(groq_client):
+    # $Diana ၏ မတူညီသော Game-Themed Persona များ
+    prompts = [
+        "Write as Diana (the girl from Pragmata) guiding Hugh to the moon. Roast the gamers waiting for the release while $Diana is already mooning.",
+        "Write as Hugh the Fixer. Mention he can't fix the game delay but he's 'fixing' portfolios with $Diana token. Be savage.",
+        "Create a 'Patch Notes' style tweet for $Diana v2.0. Buff: AI Gains, Nerf: Manual Coding/Trading. Roast Pragmata's missing status.",
+        "Use a Cyberpunk HUD style report. Scan for Pragmata (Not Found) vs $Diana (Bullish Target Locked). Use 'skill issue' for non-holders.",
+        "Write a 'Legendary Quest' tweet. The mission is to hold $Diana to reach the Moon. Reward: Financial Freedom. Penalty for noobs: Staying broke.",
+        "Compare the holographic whale in Pragmata to the fake promises of other tokens. $Diana is the only real AI reality."
+    ]
+    
+    selected_prompt = random.choice(prompts)
+    
+    # System Prompt: $Diana 
+    system_message = (
+        "You are the master agent for $Diana token, inspired by the game Pragmata. "
+        "Your persona is a mix of Diana (the wise guide) and Hugh (the gritty protector). "
+        "Your tone is savage, witty, and deeply rooted in gaming/dev culture. "
+        "Slang: skill issue, lfg, ngmi, touch grass, buff, nerf, based, alpha. "
+        "Every tweet MUST include '$Diana' and hashtags #Diana #AI #Pragmata #Web3. "
+        "Max 280 characters. Use emojis 🤡, 🚀, 💎, 🛠️, 👧."
+    )
+
+    try:
+        completion = groq_client.chat.completions.create(
+            model="llama3-70b-8192",
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": selected_prompt}
+            ],
+            temperature=0.88
+        )
+        return completion.choices[0].message.content.strip()
+    except Exception as e:
+        return f"AI Error: {e}"
+
+def run_diana_master_agent():
+    # Setup Clients
+    groq_client = Groq(api_key=GROQ_API_KEY)
+    x_client = tweepy.Client(
+        consumer_key=X_API_KEY, 
+        consumer_secret=X_API_SECRET,
+        access_token=X_ACCESS_TOKEN, 
+        access_token_secret=X_ACCESS_TOKEN_SECRET
+    )
+
+    # Generate Content
+    tweet_content = generate_diana_master_content(groq_client)
+    
+    # Twitter Character Limit Check
+    if len(tweet_content) > 280:
+        tweet_content = tweet_content[:277] + "..."
+    
+    # Post to X
+    try:
+        x_client.create_tweet(text=tweet_content)
+        print(f"🔥 Successfully Posted: {tweet_content}")
+    except Exception as e:
+        print(f"❌ X Error: {e}")
+
+if __name__ == "__main__":
+    run_diana_master_agent()
