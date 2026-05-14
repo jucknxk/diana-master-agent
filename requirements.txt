@@ -1,3 +1,2 @@
-facebook-sdk
-feedparser
-requests
+tweepy
+groq
